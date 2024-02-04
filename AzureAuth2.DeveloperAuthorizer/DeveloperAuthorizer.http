@@ -1,0 +1,9 @@
+#Make sure this URL matches your current launch profile.
+@DeveloperAuthorizer = http://localhost:5001
+
+@UserName = HackerMan2000
+#Generate a token with the specified username and the role "Developer".
+GET {{DeveloperAuthorizer}}/token/{{UserName}}
+Accept: text/plain
+
+###

@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript" src="JWTClient.js"></script>
+    <script>
+        console.info("JWTClient usage:");
+        console.info("let authToken = await fetch('[Developer authorizer endpoint]').then(r => r.text());\n"
+            + "let client = new JWTClient('[Session service endpoint]');\n"
+            + "await client.login(authJWT);\n"
+            + "await client.fetch('/weatherforecast').then(r => r.json());");
+    </script>
+</head>
+<body>
+    <script type="text/javascript">
+        class Shape {
+            #context; #x; #y; #r; #w; static #fullArc = [0, Math.PI * 2];
+            constructor(ctx) { this.#context = ctx; this.#w = 0; }
+            get rotation() { return this.#w; } set rotation(v) { this.#w = v % (Math.PI * 2); }
+            fit(canvas) { this.#x = canvas.width / 2; this.#y = canvas.height / 2; this.#r = Math.min(this.#x, this.#y) / 1.1; }
+            draw(o) { this.#draw1(); this.#draw2(); this.rotation += (o && o.thenRotate || 0); }
+            get #r2() { return this.#r / 2; } get #r6() { return this.#r / 6; }
+            get #arc1() { return [this.#w, this.#w + Math.PI]; } get #arc2() { return [this.#w + Math.PI, this.#w]; }
+            get #center1() { return [this.#x - Math.cos(this.#w) * this.#r2, this.#y - Math.sin(this.#w) * this.#r2]; }
+            get #center2() { return [this.#x + Math.cos(this.#w) * this.#r2, this.#y + Math.sin(this.#w) * this.#r2]; }
+            #draw1() {
+                this.#context.clearRect(0, 0, this.#context.canvas.width, this.#context.canvas.height);
+                this.#fill('#fff', ctx => ctx.arc(this.#x, this.#y, this.#r, ...this.#arc1));
+                this.#fill('#000', ctx => ctx.arc(this.#x, this.#y, this.#r, ...this.#arc2));
+                this.#fill('#fff', ctx => ctx.arc(...this.#center1, this.#r2, ...Shape.#fullArc));
+                this.#fill('#000', ctx => ctx.arc(...this.#center1, this.#r6, ...Shape.#fullArc));
+                this.#fill('#000', ctx => ctx.arc(...this.#center2, this.#r2, ...Shape.#fullArc));
+                this.#fill('#fff', ctx => ctx.arc(...this.#center2, this.#r6, ...Shape.#fullArc));
+            }
+            #draw2() {
+                this.#context.strokeStyle = '#dcbe12'; this.#context.lineWidth = Math.sqrt(this.#r6);
+                this.#stroke(ctx => ctx.arc(this.#x, this.#y, this.#r, ...Shape.#fullArc));
+                this.#stroke(ctx => ctx.arc(...this.#center1, this.#r6, ...Shape.#fullArc));
+                this.#stroke(ctx => ctx.arc(...this.#center2, this.#r6, ...Shape.#fullArc));
+                this.#stroke(ctx => ctx.arc(...this.#center1, this.#r2, ...this.#arc2));
+                this.#stroke(ctx => ctx.arc(...this.#center2, this.#r2, ...this.#arc1));
+            }
+            #stroke(cb) { this.#context.beginPath(); cb(this.#context); this.#context.stroke(); }
+            #fill(c, cb) { this.#context.beginPath(); cb(this.#context); this.#context.fillStyle = c; this.#context.fill(); }
+        }
+        let canvas = document.createElement('canvas'),
+            yinYang = new Shape(canvas.getContext('2d')),
+            resize = () => { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; yinYang.fit(canvas); };
+        canvas.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#125616;';
+        document.body.appendChild(canvas); addEventListener('resize', resize); resize();
+        (function () { yinYang.draw({ thenRotate: 0.002 }); requestAnimationFrame(arguments.callee); })();
+    </script>
+</body>
+</html>

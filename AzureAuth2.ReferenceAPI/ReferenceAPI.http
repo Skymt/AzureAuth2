@@ -1,0 +1,12 @@
+#Make sure this URL matches your current launch profile.
+@ReferenceAPI = https://localhost:7046
+
+#This token is valid until 2025. ^^
+@SessionToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkhhY2tlck1hbjIwMDAiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNzA2OTUxODI3LCJleHAiOjE3Mzg0ODc4MjcsImlhdCI6MTcwNjk1MTgyNywiaXNzIjoiU2Vzc2lvblNlcnZpY2UiLCJhdWQiOiJVc2VycyJ9.7KqIu8Ceg9s3ciExc1XT9tF_AWmCVEZcmbs_wh3vvy8
+
+#The sample action is decorated with the [Authorize] attribute, so you need to provide a valid token.
+GET {{ReferenceAPI}}/weatherforecast/
+Accept: application/json
+Authorization: Bearer {{SessionToken}}
+
+###

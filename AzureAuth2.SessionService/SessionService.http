@@ -1,0 +1,34 @@
+#Make sure this URL matches your current launch profile.
+@SessionService = https://localhost:7025
+
+#This token is valid until 2025. ^^
+@AuthToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkhhY2tlck1hbjIwMDAiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNzA2OTUwNjYzLCJleHAiOjE3Mzg0ODY2NjMsImlhdCI6MTcwNjk1MDY2MywiaXNzIjoiRGV2ZWxvcGVyQXV0aG9yaXplciIsImF1ZCI6IkRldmVsb3BlcnMifQ.NqwwkQEyQiwF9rxOFn8udv4bW5wAN7ICiWEiL6ye9b4
+
+#Start new session from auth token
+PATCH {{SessionService}}/login
+Accept: application/json
+Authorization: Bearer {{AuthToken}}
+# Returns the new JWT, a suggested delay for the next 
+# refresh and the rowkey to the claims table data
+# in an http-only cookie.
+
+###
+
+# To make sure this refresh-token is valid, copy it from
+# the Set-Cookie header of the previous response.
+@RefreshToken = c9897e2c-13b9-48c1-8bc0-e0d1d4b7a673
+
+# Resume a session using a refresh token
+PATCH {{SessionService}}/login
+Accept: application/json
+Cookie: AuthId={{RefreshToken}}
+# This will consume the table storage row, thus requests
+# for a specific auth-id will only work once.
+
+###
+
+# Deletes the row from table storage (if it exists)
+# and invalidates the refresh token cookie.
+PATCH {{SessionService}}/logout
+
+###
