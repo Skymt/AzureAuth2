@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAuth2.DeveloperAuthori
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAuth2.ReferenceAPI", "AzureAuth2.ReferenceAPI\AzureAuth2.ReferenceAPI.csproj", "{ED5D5A68-B869-4233-AACA-7B2A52176C32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAuth2.SessionService", "AzureAuth2.SessionService\AzureAuth2.SessionService.csproj", "{AAC4E963-CA74-4011-8A00-6714AEF0B717}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAuth2.SessionService", "AzureAuth2.SessionService\AzureAuth2.SessionService.csproj", "{AAC4E963-CA74-4011-8A00-6714AEF0B717}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8767BE43-7FBA-4A71-B146-8253EB0B2221}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
