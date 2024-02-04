@@ -6,9 +6,9 @@
     <script type="text/javascript" src="JWTClient.js"></script>
     <script>
         console.info("JWTClient usage:");
-        console.info("let authToken = await fetch('[Developer authorizer endpoint]').then(r => r.text());\n"
-            + "let client = new JWTClient('[Session service endpoint]');\n"
-            + "await client.login(authJWT);\n"
+        console.info("let authToken = await fetch('http://localhost:5001/token/UserName').then(r => r.text());\n"
+            + "let client = new JWTClient('https://localhost:7025');\n"
+            + "await client.login(authToken);\n"
             + "await client.fetch('/weatherforecast').then(r => r.json());");
     </script>
 </head>
