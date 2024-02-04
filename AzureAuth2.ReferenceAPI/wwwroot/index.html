@@ -6,7 +6,7 @@
     <script type="text/javascript" src="JWTClient.js"></script>
     <script>
         console.info("JWTClient usage:");
-        console.info("let authToken = await fetch('http://localhost:5001/token/UserName').then(r => r.text());\n"
+        console.info("let authToken = await fetch('http://localhost:5001/auth/UserName').then(r => r.text());\n"
             + "let client = new JWTClient('https://localhost:7025');\n"
             + "await client.login(authToken);\n"
             + "await client.fetch('/weatherforecast').then(r => r.json());");
@@ -14,6 +14,7 @@
 </head>
 <body>
     <script type="text/javascript">
+        // Some complex code for balance
         class Shape {
             #context; #x; #y; #r; #w; static #fullArc = [0, Math.PI * 2];
             constructor(ctx) { this.#context = ctx; this.#w = 0; }
@@ -45,11 +46,11 @@
             #fill(c, cb) { this.#context.beginPath(); cb(this.#context); this.#context.fillStyle = c; this.#context.fill(); }
         }
         let canvas = document.createElement('canvas'),
-            yinYang = new Shape(canvas.getContext('2d')),
-            resize = () => { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; yinYang.fit(canvas); };
+            shape = new Shape(canvas.getContext('2d')),
+            resize = () => { canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; shape.fit(canvas); };
         canvas.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#125616;';
         document.body.appendChild(canvas); addEventListener('resize', resize); resize();
-        (function () { yinYang.draw({ thenRotate: 0.002 }); requestAnimationFrame(arguments.callee); })();
+        (function () { shape.draw({ thenRotate: 0.002 }); requestAnimationFrame(arguments.callee); })();
     </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 
 @UserName = HackerMan2000
 #Generate a token with the specified username and the role "Developer".
-GET {{DeveloperAuthorizer}}/token/{{UserName}}
+GET {{DeveloperAuthorizer}}/auth/{{UserName}}
 Accept: text/plain
 
 ###
