@@ -8,7 +8,7 @@ internal class ClaimsTableRepository
     readonly TableClient claimsTable;
     public ClaimsTableRepository(IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("ClaimsStorage") ?? "UseDevelopmentStorage=true";
+        var connectionString = configuration.GetConnectionString("ClaimsStorage");
         TableServiceClient tableServiceClient = new(connectionString);
         claimsTable = tableServiceClient.GetTableClient("Claims");
         claimsTable.CreateIfNotExists();
