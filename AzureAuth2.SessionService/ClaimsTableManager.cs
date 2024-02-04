@@ -45,12 +45,13 @@ internal class ClaimsEntity : ITableEntity
         {
             using var sourceStream = new MemoryStream(Convert.FromBase64String(value));
             using var deserializer = new BinaryReader(sourceStream);
-            List<Claim> claims = [];
-            while (sourceStream.Position < sourceStream.Length)
+            IEnumerable<Claim> claimsEnumerator()
             {
-                claims.Add(new Claim(deserializer));
+                while (sourceStream.Position < sourceStream.Length) 
+                    yield return new Claim(deserializer);
             }
-            ClaimSet = claims;
+
+            ClaimSet = claimsEnumerator().ToList();
         }
     }
     string ITableEntity.PartitionKey { get; set; } = "Claims";
