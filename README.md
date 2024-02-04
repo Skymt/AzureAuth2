@@ -25,8 +25,8 @@ secrets.json
 
 ## Running the project
 There are several URLs hardcoded in the project, so you will need to run the following profiles:
-DeveloperAuthorizer: http
-SessionService: https
-ReferenceAPI: https
+* DeveloperAuthorizer: http
+* SessionService: https
+* ReferenceAPI: https
 
 
