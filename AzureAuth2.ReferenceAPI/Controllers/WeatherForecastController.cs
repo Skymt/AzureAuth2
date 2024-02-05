@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 #pragma warning disable IDE0300 // Code style suggestions are fine, but I want to keep this code as close to the original as possible
-#pragma warning disable IDE0290 // This is what the template created, with the exception of the addition of the [Authorize] attribute
+#pragma warning disable IDE0290 // This is the class the template created, with the exception of the addition of the [Authorize] attribute
 #pragma warning disable IDE0052
 namespace AzureAuth2.ReferenceAPI.Controllers
 {
@@ -36,7 +36,6 @@ namespace AzureAuth2.ReferenceAPI.Controllers
         }
     }
 }
-
 #pragma warning restore IDE0300
 #pragma warning restore IDE0290
 #pragma warning restore IDE0052

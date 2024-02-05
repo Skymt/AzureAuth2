@@ -18,4 +18,8 @@ app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllers();
 
+app.MapGet("/whoami", (HttpContext context) => context.User.Claims.Any()
+    ? Results.Ok(context.User.Claims.Select(c => new { c.Type, c.Value }).ToArray())
+    : Results.Ok(new { result = "You're nothing to me." }));
+
 app.Run();

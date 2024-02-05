@@ -10,3 +10,9 @@ Accept: application/json
 Authorization: Bearer {{SessionToken}}
 
 ###
+
+GET {{ReferenceAPI}}/whoami/
+Accept: application/json
+Authorization: Bearer {{SessionToken}}
+
+###

@@ -10,15 +10,19 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseCors(policy => policy.AllowAnyOrigin());
+// Note: It is not recommended to allow any origin in a production environment! Restrict to known front-end origins.
 
 app.MapGet("/auth/{name}", (string name, JWTManager jwtProvider) 
     => jwtProvider.Generate(claims: getClaimSet(name), duration: TimeSpan.FromDays(365)));
 // Note: It is not recommended to use more than a few seconds duration for an auth token in a production environment!
+// The exchange of the auth and session JWTs should be done automatically.
+
 app.Run();
 
-// Generate the default claim set
+// Note: This base set will get additional claims from the conversion to a JWT.
 static Claim[] getClaimSet(string name) => new Claim[]
 {
     new(ClaimTypes.Name, name),
-    new(ClaimTypes.Role, "Developer")
+    new(ClaimTypes.Role, "Developer"),
+    new("CustomType", "CustomValue")
 };

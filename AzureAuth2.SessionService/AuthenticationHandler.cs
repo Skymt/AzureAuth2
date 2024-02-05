@@ -26,10 +26,8 @@ internal class AuthenticationHandler
     public async Task<List<Claim>?> GetClaimsFromStorage()
     {
         if (Guid.TryParse(request.Cookies[JWTManager.AuthCookieName], out var refreshToken))
-        {
-            var claims = await repository.Get(refreshToken);
-            if(claims != null) return claims;
-        }
+            return await repository.Get(refreshToken);
+        
         return null;
     }
 
@@ -38,15 +36,18 @@ internal class AuthenticationHandler
         if (Guid.TryParse(request.Cookies[JWTManager.AuthCookieName], out var expiredRefreshToken))
             await repository.Drop(expiredRefreshToken);
 
-        var entity = await repository.Store(claims);
-        response.Cookies.Append(JWTManager.AuthCookieName, $"{entity.RefreshToken}", new CookieOptions
+        var refreshToken = await repository.Set(claims);
+        response.Cookies.Append(JWTManager.AuthCookieName, $"{refreshToken}", new CookieOptions
         {
             Expires = DateTimeOffset.Now + refreshTokenLifetime,
             HttpOnly = true, Secure = true,
             Path = request.Host.ToString(),
             SameSite = SameSiteMode.Strict
         });
-        return (manager.Generate(claims, jwtLifetime), jwtLifetime - TimeSpan.FromSeconds(30));
+
+        var jwt = manager.Generate(claims, jwtLifetime);
+        var refreshHint = jwtLifetime - TimeSpan.FromSeconds(30);
+        return (jwt, refreshHint);
     }
 
     public async Task DropClaims()
