@@ -31,7 +31,7 @@ public class JWTManager
     }
 
     public Task<TokenValidationResult> Validate(string token)
-        => tokenHandler.ValidateTokenAsync(token, validationParameters);
+        => tokenHandler.ValidateTokenAsync(token.Replace("Bearer ", string.Empty), validationParameters);
     public string Generate(IEnumerable<Claim> claims, TimeSpan duration, string? audience = null)
     {
         var currentAudience = audience ?? this.audience;

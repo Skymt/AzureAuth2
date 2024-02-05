@@ -17,7 +17,7 @@ internal class AuthenticationHandler
     {
         if (request.Headers.TryGetValue("Authorization", out var jwt))
         {
-            var validation = await manager.Validate(jwt[0]![7..]);
+            var validation = await manager.Validate(jwt!);
             if (validation.IsValid) return validation.ClaimsIdentity.Claims.ToList();
         }
         return null;
