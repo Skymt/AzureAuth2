@@ -32,8 +32,8 @@ app.MapPatch("/login", async (AuthenticationHandler handler) =>
         return Results.Unauthorized();
     }
 
-    var (jwt, refreshHint) = await handler.StoreClaims(claims);
-    return Results.Ok(new { token = jwt, refreshAt = refreshHint.TotalMilliseconds });
+    var (token, refreshHint) = await handler.StoreClaims(claims);
+    return Results.Ok(new { token, refreshHint });
 });
 
 app.MapPatch("/logout", async (AuthenticationHandler handler) =>

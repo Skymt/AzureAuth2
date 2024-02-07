@@ -27,11 +27,11 @@ internal class AuthenticationHandler
     {
         if (Guid.TryParse(request.Cookies[JWTManager.AuthCookieName], out var refreshToken))
             return await repository.Get(refreshToken);
-        
+
         return null;
     }
 
-    public async Task<(string jwt, TimeSpan refreshHint)> StoreClaims(List<Claim> claims)
+    public async Task<(string jwt, double refreshHint)> StoreClaims(List<Claim> claims)
     {
         if (Guid.TryParse(request.Cookies[JWTManager.AuthCookieName], out var expiredRefreshToken))
             await repository.Drop(expiredRefreshToken);
@@ -40,14 +40,15 @@ internal class AuthenticationHandler
         response.Cookies.Append(JWTManager.AuthCookieName, $"{refreshToken}", new CookieOptions
         {
             Expires = DateTimeOffset.Now + refreshTokenLifetime,
-            HttpOnly = true, Secure = true,
+            HttpOnly = true,
+            Secure = true,
             Path = request.Host.ToString(),
             SameSite = SameSiteMode.Strict
         });
 
         var jwt = manager.Generate(claims, jwtLifetime);
         var refreshHint = jwtLifetime - TimeSpan.FromSeconds(30);
-        return (jwt, refreshHint);
+        return (jwt, refreshHint.TotalMilliseconds);
     }
 
     public async Task DropClaims()
@@ -55,7 +56,8 @@ internal class AuthenticationHandler
         response.Cookies.Append(JWTManager.AuthCookieName, string.Empty, new CookieOptions
         {
             Expires = DateTimeOffset.Now,
-            HttpOnly = true, Secure = true,
+            HttpOnly = true,
+            Secure = true,
             Path = request.Host.ToString(),
             SameSite = SameSiteMode.Strict
         });
@@ -64,4 +66,3 @@ internal class AuthenticationHandler
             await repository.Drop(loggedOutToken);
     }
 }
-

@@ -31,6 +31,6 @@ class JWTClient {
     set #jwt(jwt) {
         this.#token = jwt.token;
         if (this.#refresh) clearTimeout(this.#refresh);
-        this.#refresh = setTimeout(async _ => await this.login(), jwt.refreshAt);
+        this.#refresh = setTimeout(async _ => await this.login(), jwt.refreshHint);
     }
 }
