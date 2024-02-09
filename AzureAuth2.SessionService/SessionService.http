@@ -16,7 +16,7 @@ Authorization: Bearer {{AuthToken}}
 
 # To make sure this refresh-token is valid, copy it from
 # the Set-Cookie header of the previous response.
-@RefreshToken = c9897e2c-13b9-48c1-8bc0-e0d1d4b7a673
+@RefreshToken = abcdef01-2345-6789-abcd-ef0123456789
 
 # Resume a session using a refresh token
 PATCH {{SessionService}}/login
