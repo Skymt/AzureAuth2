@@ -16,17 +16,18 @@ public class JWTManager
     readonly EncryptingCredentials? encryptingCredentials;
     public JWTManager(IConfiguration configuration)
     {
+        issuer = configuration["JWT:Issuer"]!; audience = configuration["JWT:Audience"]!;
         validationParameters = GetValidationParameters(configuration);
         signingCredentials = new SigningCredentials(
             validationParameters.IssuerSigningKey,
             SecurityAlgorithms.HmacSha256);
-        if (validationParameters.TokenDecryptionKey != null)
-            encryptingCredentials = new(
-                validationParameters.TokenDecryptionKey,
-                SecurityAlgorithms.Aes128KW,
-                SecurityAlgorithms.Aes128CbcHmacSha256);
-
-        issuer = configuration["JWT:Issuer"]!; audience = configuration["JWT:Audience"]!;
+        encryptingCredentials = validationParameters.TokenDecryptionKey switch
+        {
+            SymmetricSecurityKey key => new(key, 
+                SecurityAlgorithms.Aes128KW, 
+                SecurityAlgorithms.Aes128CbcHmacSha256),
+            _ => null
+        };
         tokenHandler = new();
     }
 
@@ -44,8 +45,8 @@ public class JWTManager
         {
             Subject = new ClaimsIdentity(distinctClaims),
             Expires = DateTime.UtcNow.Add(duration),
-            Audience = currentAudience,
             Issuer = issuer,
+            Audience = currentAudience,
             SigningCredentials = signingCredentials,
         };
 
@@ -67,18 +68,13 @@ public class JWTManager
 
         var parameters = new TokenValidationParameters
         {
-            ValidateLifetime = true,
-            ValidateIssuer = issuers != null,
-            ValidIssuers = issuers,
-            ValidateAudience = audiences != null,
-            ValidAudiences = audiences,
-            IssuerSigningKey = key,
+            IssuerSigningKey = key, ValidateLifetime = true, 
+            ValidateIssuer = issuers != null, ValidIssuers = issuers,
+            ValidateAudience = audiences != null, ValidAudiences = audiences,
         };
         if (encrypted)
-        {
-            SymmetricSecurityKey encryptionKey = new(Encoding.ASCII.GetBytes(configuration["JWT:Secret"]![..16]));
-            parameters.TokenDecryptionKey = encryptionKey;
-        }
+            parameters.TokenDecryptionKey = 
+                new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JWT:Secret"]![..16]));
 
         return parameters;
     }
@@ -90,8 +86,8 @@ public class JWTManager
     /// <remarks>This method does not update any configuration!</remarks>
     public static string GenerateNewSharedSecret()
     {
-        var randomSeed = new Span<byte>(new byte[54]); // (54 bytes * 8) bits / 6 bits = 72 base64 characters (sextets)
-        Random.Shared.NextBytes(randomSeed);
-        return Convert.ToBase64String(randomSeed);
+        var buffer = new Span<byte>(new byte[54]); // (54 bytes * 8 bits) / (6 bits / sextet) = (72 sextets)
+        Random.Shared.NextBytes(buffer);
+        return Convert.ToBase64String(buffer);
     }
 }

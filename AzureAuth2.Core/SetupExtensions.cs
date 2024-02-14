@@ -18,7 +18,7 @@ public static class Extensions
     {
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => options.TokenValidationParameters = JWTManager.GetValidationParameters(configuration)!);
+            .AddJwtBearer(options => options.TokenValidationParameters = JWTManager.GetValidationParameters(configuration));
 
         return services;
     }
