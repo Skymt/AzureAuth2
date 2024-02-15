@@ -20,9 +20,9 @@ app.MapGet("/auth/{name}", (string name, JWTManager jwtProvider)
 app.Run();
 
 // Note: This base set will get additional claims from the conversion to a JWT.
-static Claim[] getClaimSet(string name) => new Claim[]
-{
+static Claim[] getClaimSet(string name) =>
+[
     new(ClaimTypes.Name, name),
     new(ClaimTypes.Role, "Developer"),
     new("CustomType", "CustomValue")
-};
+];
