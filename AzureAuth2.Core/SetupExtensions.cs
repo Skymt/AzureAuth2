@@ -9,16 +9,14 @@ public static class Extensions
 {
     /// <summary>
     /// Add JWT authentication scheme to the service collection. The provided configuration must contain a section named "JWT",
-    /// with a key named "Secret". The keys "ValidIssuers" and "ValidAudiences" are optional.
+    /// with a key named "Secret". The keys "ValidIssuers" and "ValidAudiences" are optional. "EncryptClaims" will default to false.
     /// <para>
-    /// If a <see cref="TimeProvider"/> has been registered, the parameters will calculate the clock skew from system time.
-    /// If the provider is of type <see cref="SpoofableTimeProvider"/>, the skew will be calculated from 
-    /// the spoofed time dynamically (i.e it can change at runtime).
+    /// To override an already injected TimeProvider, pass <see cref="TimeProvider.System"/> as the timeProvider parameter.
     /// </para>
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration</param>
-    /// <param name="timeProvider">Optional time provider that is exclusive for JWT authentication.</param>
+    /// <param name="timeProvider">Optional time provider, exclusive for JWT authentication.</param>
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration, TimeProvider? timeProvider = null)
     {
@@ -33,10 +31,13 @@ public static class Extensions
 
     /// <summary>
     /// Adds a JWT manager to the service collection. The provided configuration must contain a section named "JWT",
-    /// with the following keys: "Issuer", "Audience" and "Secret".
+    /// with the following keys: "Issuer", "Audience" and "Secret". The optional key "EncryptClaims" will default to false.
+    /// <para>
+    /// To override an already injected TimeProvider, pass <see cref="TimeProvider.System"/> as the timeProvider parameter.
+    /// </para>
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="timeProvider">Optional time provider that is exclusive for this manager.</param>
+    /// <param name="timeProvider">Optional time provider, exclusive for the jwt manager.</param>
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddJWTManager(this IServiceCollection services, TimeProvider? timeProvider = null)
     {
@@ -47,6 +48,9 @@ public static class Extensions
         });
         return services;
     }
+
+    public static IServiceCollection AddSpoofableTimeProvider(this IServiceCollection services, out SpoofableTimeProvider timeProvider)
+        => services.AddSingleton<TimeProvider>(timeProvider = new());
 
     ///<summary>
     /// Adds a named HTTP client to the service collection that 

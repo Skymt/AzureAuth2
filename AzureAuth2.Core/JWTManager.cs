@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -43,7 +44,7 @@ public class JWTManager
     {
         try
         {
-            var principal = tokenHandler.ValidateToken(token.Replace("Bearer ", string.Empty), validationParameters, out _);
+            var principal = tokenHandler.ValidateToken(token.Replace(JwtBearerDefaults.AuthenticationScheme, string.Empty).Trim(), validationParameters, out _);
             claims = principal.Claims;
             return true;
         }
@@ -65,7 +66,7 @@ public class JWTManager
     {
         try
         {
-            principal = tokenHandler.ValidateToken(token.Replace("Bearer ", string.Empty), validationParameters, out validatedToken);
+            principal = tokenHandler.ValidateToken(token.Replace(JwtBearerDefaults.AuthenticationScheme, string.Empty).Trim(), validationParameters, out validatedToken);
             return true;
         }
         catch
@@ -85,7 +86,7 @@ public class JWTManager
     {
         try
         {
-            tokenHandler.ValidateToken(token.Replace("Bearer ", string.Empty), validationParameters, out _);
+            tokenHandler.ValidateToken(token.Replace(JwtBearerDefaults.AuthenticationScheme, string.Empty).Trim(), validationParameters, out _);
             return textIfValid;
         }
         catch (Exception ex) { return ex.Message; }
@@ -114,13 +115,12 @@ public class JWTManager
             .GroupBy(c => c.Type + c.Value)
             .Select(g => g.First())
             .Where(claimIsNotCurrentAudience);
-        var now = timeProvider.GetUtcNow();
+        var now = timeProvider.GetUtcNow().UtcDateTime;
         var tokenDescription = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(distinctClaims),
-            NotBefore = now.DateTime, 
-            IssuedAt = now.DateTime,
-            Expires = now.Add(duration).DateTime,
+            NotBefore = now, IssuedAt = now,
+            Expires = now.Add(duration),
             Issuer = issuer,
             Audience = currentAudience,
             SigningCredentials = signingCredentials,
@@ -129,9 +129,7 @@ public class JWTManager
         if (encryptingCredentials != null)
             tokenDescription.EncryptingCredentials = encryptingCredentials;
 
-        var jwt = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescription));
-
-        return jwt;
+        return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescription));
         bool claimIsNotCurrentAudience(Claim c) => !(c.Type == "aud" && c.Value == currentAudience);
     }
 
@@ -145,12 +143,12 @@ public class JWTManager
     {
         byte[] secretKey = Encoding.ASCII.GetBytes(configuration["JWT:Secret"]!);
         var issuers = configuration["JWT:ValidIssuers"]?.Split(',');
-        var audiences = configuration["JWT:ValidAudiences"]?.Split(',').ToHashSet();
+        var audiences = configuration["JWT:ValidAudiences"]?.Split(',');
         var encryptClaims = configuration.GetValue("JWT:EncryptClaims", false);
 
         SymmetricSecurityKey signerKey = new(secretKey);
         SymmetricSecurityKey? cryptoKey = encryptClaims ? new(secretKey[..16]) : null;
-        TokenValidationParameters parameters = new()
+        return new()
         {
             IssuerSigningKey = signerKey,
             ValidateLifetime = true,
@@ -159,12 +157,12 @@ public class JWTManager
             ValidateAudience = audiences != null,
             ValidAudiences = audiences,
             TokenDecryptionKey = cryptoKey,
+            LifetimeValidator = (notBefore, expires, _, _) =>
+            {
+                var now = timeProvider?.GetUtcNow().UtcDateTime ?? TimeProvider.System.GetUtcNow().UtcDateTime;
+                return notBefore.HasValue && notBefore < now && expires.HasValue && expires > now;
+            }
         };
-        if(timeProvider is SpoofableTimeProvider spoofableTimeProvider)
-            parameters.LifetimeValidator = spoofableTimeProvider.LifetimeValidator;
-        else if (timeProvider != null)
-            parameters.ClockSkew = timeProvider.GetUtcNow() - TimeProvider.System.GetUtcNow();
-        return parameters;
     }
 
     /// <summary>

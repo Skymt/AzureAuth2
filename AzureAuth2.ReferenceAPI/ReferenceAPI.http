@@ -1,8 +1,8 @@
 #Make sure this URL matches your current launch profile.
 @ReferenceAPI = https://localhost:7046
 
-#This token is valid until 2025. ^^
-@SessionToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkhhY2tlck1hbjIwMDAiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNzA2OTUxODI3LCJleHAiOjE3Mzg0ODc4MjcsImlhdCI6MTcwNjk1MTgyNywiaXNzIjoiU2Vzc2lvblNlcnZpY2UiLCJhdWQiOiJVc2VycyJ9.7KqIu8Ceg9s3ciExc1XT9tF_AWmCVEZcmbs_wh3vvy8
+#This token is valid 15 minutes after project start.
+@SessionToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkhhY2tlck1hbjIwMDAiLCJyb2xlIjoiRGV2ZWxvcGVyIiwiQ3VzdG9tVHlwZSI6IkN1c3RvbVZhbHVlIiwibmJmIjoxNjQwOTk1MjE0LCJleHAiOjE2NDA5OTYxMTQsImlhdCI6MTY0MDk5NTIxNCwiaXNzIjoiU2Vzc2lvblNlcnZpY2UiLCJhdWQiOlsiRGV2ZWxvcGVycyIsIlVzZXJzIl19.t943-1FQymc7fgOT-iJsKSoLzOYu8Ug_Sb5T6T-nEOw
 
 #The sample action is decorated with the [Authorize] attribute, so you need to provide a valid token.
 GET {{ReferenceAPI}}/weatherforecast/

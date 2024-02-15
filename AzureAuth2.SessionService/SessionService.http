@@ -1,8 +1,8 @@
 #Make sure this URL matches your current launch profile.
 @SessionService = https://localhost:7025
 
-#This token is valid until 2025. ^^
-@AuthToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkhhY2tlck1hbjIwMDAiLCJyb2xlIjoiRGV2ZWxvcGVyIiwibmJmIjoxNzA2OTUwNjYzLCJleHAiOjE3Mzg0ODY2NjMsImlhdCI6MTcwNjk1MDY2MywiaXNzIjoiRGV2ZWxvcGVyQXV0aG9yaXplciIsImF1ZCI6IkRldmVsb3BlcnMifQ.NqwwkQEyQiwF9rxOFn8udv4bW5wAN7ICiWEiL6ye9b4
+#This token is valid for 30 seconds after the project starts.
+@AuthToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkhhY2tlck1hbjIwMDAiLCJyb2xlIjoiRGV2ZWxvcGVyIiwiQ3VzdG9tVHlwZSI6IkN1c3RvbVZhbHVlIiwibmJmIjoxNjQwOTk1MjAwLCJleHAiOjE2NDA5OTUyMzAsImlhdCI6MTY0MDk5NTIwMCwiaXNzIjoiRGV2ZWxvcGVyQXV0aG9yaXplciIsImF1ZCI6IkRldmVsb3BlcnMifQ.IpRYOog77UYn8XuLQ3CrGXbnKd-WtQiQDDXq5wcYUOU
 
 #Start new session from auth token
 PATCH {{SessionService}}/login

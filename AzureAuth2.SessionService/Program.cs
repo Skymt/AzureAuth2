@@ -5,11 +5,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddSpoofableTimeProvider(out var timeProvider);
 builder.Services.AddJWTManager();
 builder.Services.AddSingleton<ClaimsTableRepository>();
 builder.Services.AddTransient<AuthenticationHandler>();
 
 var app = builder.Build();
+
+// Spoof the time to allow the tokens in the http files to be valid.
+timeProvider.Spoof(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
 
 // Configure the HTTP request pipeline.
 

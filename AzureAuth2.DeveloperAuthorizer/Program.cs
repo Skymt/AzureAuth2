@@ -3,19 +3,20 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSpoofableTimeProvider(out var timeProvider);
 builder.Services.AddJWTManager();
 builder.Services.AddCors();
 
 var app = builder.Build();
+// Spoof the time to allow the tokens in the http files to be valid.
+timeProvider.Spoof(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
 
 // Configure the HTTP request pipeline.
 app.UseCors(policy => policy.AllowAnyOrigin());
 // Note: It is not recommended to allow any origin in a production environment! Restrict to known front-end origins.
 
 app.MapGet("/auth/{name}", (string name, JWTManager jwtProvider) 
-    => jwtProvider.Generate(claims: getClaimSet(name), duration: TimeSpan.FromDays(365)));
-// Note: It is not recommended to use more than a few seconds duration for an auth token in a production environment!
-// The exchange of the auth and session JWTs should be done automatically.
+    => jwtProvider.Generate(claims: getClaimSet(name), duration: TimeSpan.FromSeconds(30)));
 
 app.Run();
 

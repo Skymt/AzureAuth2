@@ -1,6 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-
-namespace AzureAuth2.Core;
+﻿namespace AzureAuth2.Core;
 
 public class SpoofableTimeProvider : TimeProvider
 {
@@ -13,12 +11,6 @@ public class SpoofableTimeProvider : TimeProvider
     public void Spoof(DateTimeOffset utcDateAndTime) => spoofedTimeOffset = utcDateAndTime - base.GetUtcNow();
     public void Reset() => spoofedTimeOffset = TimeSpan.Zero;
     
-    public LifetimeValidator LifetimeValidator => (notBefore, expires, _, _) =>
-    {
-        var now = GetUtcNow();
-        return (!notBefore.HasValue || notBefore < now) && (!expires.HasValue || expires > now);
-    };
-
     public override DateTimeOffset GetUtcNow() => base.GetUtcNow().Add(spoofedTimeOffset);
     public override long GetTimestamp() => base.GetTimestamp() + spoofedTimeOffset.Ticks;
 }
