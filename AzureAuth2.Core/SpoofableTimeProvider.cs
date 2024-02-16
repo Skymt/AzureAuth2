@@ -6,6 +6,7 @@ public class SpoofableTimeProvider : TimeProvider
     public SpoofableTimeProvider() { }
     public SpoofableTimeProvider(TimeSpan offset) => Spoof(offset);
     public SpoofableTimeProvider(DateTimeOffset offset) => Spoof(offset);
+    public SpoofableTimeProvider(DateTime offset) => Spoof(offset);
 
     public void Spoof(TimeSpan offset) => spoofedTimeOffset = offset;
     public void Spoof(DateTimeOffset dateAndTime) => spoofedTimeOffset = dateAndTime - base.GetUtcNow();
@@ -13,7 +14,7 @@ public class SpoofableTimeProvider : TimeProvider
     {
         if (dateTime.Kind == DateTimeKind.Local || dateTime.Kind == DateTimeKind.Unspecified)
             Spoof(new DateTimeOffset(dateTime, TimeZoneInfo.Local.GetUtcOffset(dateTime)));
-        else if (dateTime.Kind == DateTimeKind.Utc)
+        else
             Spoof(new DateTimeOffset(dateTime, TimeSpan.Zero));
     }
     public void Reset() => spoofedTimeOffset = TimeSpan.Zero;
