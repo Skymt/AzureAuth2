@@ -10,7 +10,7 @@ builder.Services.AddJWTAuthentication(builder.Configuration);
 var app = builder.Build();
 
 // Spoof the time to allow the tokens in the http files to be valid.
-timeProvider.Spoof(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
+timeProvider.Spoof(new DateTime(2022, 1, 1));
 
 // Configure the HTTP request pipeline.
 

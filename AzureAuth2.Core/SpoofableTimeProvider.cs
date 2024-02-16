@@ -8,7 +8,14 @@ public class SpoofableTimeProvider : TimeProvider
     public SpoofableTimeProvider(DateTimeOffset offset) => Spoof(offset);
 
     public void Spoof(TimeSpan offset) => spoofedTimeOffset = offset;
-    public void Spoof(DateTimeOffset utcDateAndTime) => spoofedTimeOffset = utcDateAndTime - base.GetUtcNow();
+    public void Spoof(DateTimeOffset dateAndTime) => spoofedTimeOffset = dateAndTime - base.GetUtcNow();
+    public void Spoof(DateTime dateTime)
+    {
+        if (dateTime.Kind == DateTimeKind.Local || dateTime.Kind == DateTimeKind.Unspecified)
+            Spoof(new DateTimeOffset(dateTime, TimeZoneInfo.Local.GetUtcOffset(dateTime)));
+        else if (dateTime.Kind == DateTimeKind.Utc)
+            Spoof(new DateTimeOffset(dateTime, TimeSpan.Zero));
+    }
     public void Reset() => spoofedTimeOffset = TimeSpan.Zero;
     
     public override DateTimeOffset GetUtcNow() => base.GetUtcNow().Add(spoofedTimeOffset);
