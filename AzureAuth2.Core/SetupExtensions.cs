@@ -17,7 +17,7 @@ public static class Extensions
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration</param>
     /// <param name="timeProvider">Optional time provider, exclusive for JWT authentication.</param>
-    /// <returns>The updated service collection.</returns>
+    /// <returns>The service collection.</returns>
     public static IServiceCollection AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration, TimeProvider? timeProvider = null)
     {
         timeProvider ??= services.First(s => s.ServiceType == typeof(TimeProvider))?.ImplementationInstance as TimeProvider;
@@ -38,7 +38,7 @@ public static class Extensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="timeProvider">Optional time provider, exclusive for the jwt manager.</param>
-    /// <returns>The updated service collection.</returns>
+    /// <returns>The service collection.</returns>
     public static IServiceCollection AddJWTManager(this IServiceCollection services, TimeProvider? timeProvider = null)
     {
         services.AddSingleton(serviceHost =>
@@ -49,6 +49,13 @@ public static class Extensions
         return services;
     }
 
+    /// <summary>
+    /// Adds a time provider to the service collection. This time provider 
+    /// is used to spoof the current time for testing purposes.
+    /// </summary>
+    /// <param name="services">The service collection to inject the timer into.</param>
+    /// <param name="timeProvider">A reference to the activated instance of <see cref="SpoofableTimeProvider"/>.</param>
+    /// <returns>The service collection</returns>
     public static IServiceCollection AddSpoofableTimeProvider(this IServiceCollection services, out SpoofableTimeProvider timeProvider)
         => services.AddSingleton<TimeProvider>(timeProvider = new());
 
@@ -58,7 +65,7 @@ public static class Extensions
     /// when calling a service. No modification to the user JWT is made.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <returns>The updated service collection.</returns>
+    /// <returns>The service collection.</returns>
     /// <remarks>
     /// Note: The frontend can maintain its own repository of microservices and call them directly, 
     /// since the frontend is the owner of the JWT. Using this client might be a redundant step.

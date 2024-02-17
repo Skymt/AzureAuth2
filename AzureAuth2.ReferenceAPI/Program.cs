@@ -2,15 +2,15 @@ using AzureAuth2.Core;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddControllers();
 builder.Services.AddSpoofableTimeProvider(out var timeProvider);
 builder.Services.AddJWTAuthentication(builder.Configuration);
 
-var app = builder.Build();
-
 // Spoof the time to allow the tokens in the http files to be valid.
 timeProvider.Spoof(new DateTime(2022, 1, 1));
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 

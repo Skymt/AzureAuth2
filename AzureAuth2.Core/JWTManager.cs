@@ -112,17 +112,18 @@ public class JWTManager
     {
         var currentAudience = audience ?? this.audience;
         var distinctClaims = claims
+            .Where(claimIsNotCurrentAudience)
             .GroupBy(c => c.Type + c.Value)
-            .Select(g => g.First())
-            .Where(claimIsNotCurrentAudience);
+            .Select(g => g.First());
+
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var tokenDescription = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(distinctClaims),
-            NotBefore = now, IssuedAt = now,
-            Expires = now.Add(duration),
             Issuer = issuer,
             Audience = currentAudience,
+            NotBefore = now, IssuedAt = now,
+            Expires = now.Add(duration),
             SigningCredentials = signingCredentials,
         };
 

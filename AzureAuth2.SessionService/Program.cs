@@ -5,8 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddSpoofableTimeProvider(out var timeProvider);
-builder.Services.AddJWTManager();
+var timeProvider = new SpoofableTimeProvider(new DateTime(2022, 1, 1));
+builder.Services.AddJWTManager(timeProvider);
 builder.Services.AddSingleton<ClaimsTableRepository>();
 builder.Services.AddTransient<AuthenticationHandler>();
 
